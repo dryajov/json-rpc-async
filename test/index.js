@@ -264,3 +264,23 @@ test('class instance with overrides', async (t) => {
   res = await clientRpc.getName()
   t.equal(res, 'BobSam')
 })
+
+test('pass argument data', async (t) => {
+  t.plan(2)
+
+  const [stream1, stream2] = createDuplex()
+
+  const methods = {
+    sendData: async (data) => {
+      t.equal(data, 'Bob')
+      return 'Sam'
+    }
+  }
+
+  const clientRpc = createRpc({ stream: stream1, methods: methods })
+  // server rpc
+  createRpc({ stream: stream2, methods })
+
+  const res = await clientRpc.sendData('Bob')
+  t.equal(res, 'Sam')
+})
