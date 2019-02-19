@@ -21,6 +21,7 @@ const createRpc = ({stream, methods, timeout}) => {
         outstanding[id] = {resolve,
           reject,
           timeout: (() => setTimeout(() => {
+            delete outstanding[id] // cleanup
             reject(new Error(`request ${id} timed out`))
           }, timeout))()}
         stream.push(request(id, name, args))
