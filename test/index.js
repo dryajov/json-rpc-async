@@ -291,9 +291,13 @@ test('ignore private (_) methods', async (t) => {
   const methods = {
     _private: () => {
       throw new Error('should not be called!')
+    },
+    public: () => {
+      return 'Good!'
     }
   }
 
   const clientRpc = createRpc({ stream: stream, methods: methods })
   t.ok(typeof clientRpc._private === 'undefined')
+  t.ok(typeof clientRpc.public !== 'undefined')
 })
