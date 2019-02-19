@@ -1,8 +1,9 @@
 {
   "name": "json-rpc-async",
   "version": "1.3.0",
-  "description": "",
+  "description": "simple transport agnostic json rpc module",
   "main": "src/index.js",
+  "keywords": ["rpc", "json-rpc", "remote-procedure-calls"],
   "scripts": {
     "test": "tape test/index.js"
   },
