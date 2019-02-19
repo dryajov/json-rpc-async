@@ -105,3 +105,32 @@ test('call from both ends', async (t) => {
   res = await serverRpc.a({b: 'Sam'})
   t.equal(res, 'Hello World Sam!')
 })
+
+test('call from both ends more than once', async (t) => {
+  const stream1 = new Duplex({ read: () => { }, write: () => { } })
+  const stream2 = new Duplex({ read: () => { }, write: () => { } })
+  stream1.pipe(stream2).pipe(stream1)
+
+  const methods = {
+    a: async ({ b }) => {
+      return `Hello World ${b}!`
+    }
+  }
+
+  const clientRpc = createRpc({ stream: stream1, methods })
+  // server rpc
+  const serverRpc = createRpc({ stream: stream2, methods })
+
+  let res
+  res = await clientRpc.a({ b: 'Bob1' })
+  t.equal(res, 'Hello World Bob1!')
+
+  res = await serverRpc.a({ b: 'Sam1' })
+  t.equal(res, 'Hello World Sam1!')
+
+  res = await clientRpc.a({ b: 'Bob1' })
+  t.equal(res, 'Hello World Bob1!')
+
+  res = await serverRpc.a({ b: 'Sam1' })
+  t.equal(res, 'Hello World Sam1!')
+})
