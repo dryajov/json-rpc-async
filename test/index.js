@@ -142,3 +142,27 @@ test('call from both ends more than once', async (t) => {
   res = await serverRpc.a({ b: 'Sam1' })
   t.equal(res, 'Hello World Sam1!')
 })
+
+test('class instance', async (t) => {
+  const [stream1, stream2] = createDuplex()
+
+  class Methods {
+    constructor (name) {
+      this.name = name
+    }
+
+    getName () {
+      return this.name
+    }
+  }
+
+  const methods = new Methods('Bob')
+
+  const clientRpc = createRpc({ stream: stream1, methods: methods })
+  // server rpc
+  createRpc({ stream: stream2, methods })
+
+  let res
+  res = await clientRpc.getName()
+  t.equal(res, 'Bob')
+})
