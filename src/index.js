@@ -48,12 +48,16 @@ const createRpc = ({stream, methods, timeout}) => {
     } else {
       payload = Array.isArray(payload) ? payload : [payload]
       payload.forEach((r) => {
-        const { resolve, reject, timeout } = outstanding[r.id]
-        clearTimeout(timeout)
-        if (r.error) {
-          return reject(r.error)
+        try {
+          const { resolve, reject, timeout } = outstanding[r.id]
+          clearTimeout(timeout)
+          if (r.error) {
+            return reject(r.error)
+          }
+          resolve(r.result)
+        } finally {
+          delete outstanding[r.id]
         }
-        resolve(r.result)
       })
     }
   })

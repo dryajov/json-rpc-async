@@ -7,12 +7,14 @@ const VERSION = '2.0'
 const log = debug('json-rpc-async:verbose')
 
 exports.request = (id, name, args) => {
-  return (`{
-            "jsonrpc": "${VERSION}",
-            "id": "${id}",
-            "method": "${name}",
-            "params": ${args.length ? args : '""'}
-          }`)
+  const payload = {
+    jsonrpc: `"${VERSION}"`,
+    id: id,
+    method: name,
+    params: args
+  }
+
+  return JSON.stringify(payload)
 }
 
 exports.response = (id, res, err) => {
