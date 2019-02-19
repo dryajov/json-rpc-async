@@ -24,7 +24,7 @@ const createRpc = ({stream, methods, timeout}) => {
             delete outstanding[id] // cleanup
             reject(new Error(`request ${id} timed out`))
           }, timeout))()}
-        stream.push(request(id, name, args))
+        stream.write(request(id, name, args))
       })
     }
   })
@@ -41,10 +41,10 @@ const createRpc = ({stream, methods, timeout}) => {
         const m = methods[payload.method]
         const res = await m.call(m, ...payload.params)
         if (payload.id) {
-          stream.push(response(payload.id, res))
+          stream.write(response(payload.id, res))
         }
       } catch (e) {
-        stream.push()
+        stream.write()
       }
     } else {
       payload = Array.isArray(payload) ? payload : [payload]

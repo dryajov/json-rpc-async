@@ -5,10 +5,28 @@ const createRpc = require('../src')
 
 const Duplex = require('stream').Duplex
 
+const createDuplex = () => {
+  const duplex1 = new Duplex({
+    read: () => { },
+    write: function (chunk, _, next) {
+      duplex2.push(chunk)
+      next()
+    }
+  })
+
+  const duplex2 = new Duplex({
+    read: () => { },
+    write: function (chunk, _, next) {
+      duplex1.push(chunk)
+      next()
+    }
+  })
+
+  return [duplex1, duplex2]
+}
+
 test('call without params', async (t) => {
-  const stream1 = new Duplex({ read: () => { }, write: () => { } })
-  const stream2 = new Duplex({ read: () => { }, write: () => { } })
-  stream1.pipe(stream2).pipe(stream1)
+  const [stream1, stream2] = createDuplex()
 
   const methods = {
     a: async () => {
@@ -25,9 +43,7 @@ test('call without params', async (t) => {
 })
 
 test('call with positional params', async (t) => {
-  const stream1 = new Duplex({ read: () => { }, write: () => { } })
-  const stream2 = new Duplex({ read: () => { }, write: () => { } })
-  stream1.pipe(stream2).pipe(stream1)
+  const [stream1, stream2] = createDuplex()
 
   const methods = {
     a: async (b) => {
@@ -44,9 +60,7 @@ test('call with positional params', async (t) => {
 })
 
 test('call with named params', async (t) => {
-  const stream1 = new Duplex({ read: () => { }, write: () => { } })
-  const stream2 = new Duplex({ read: () => { }, write: () => { } })
-  stream1.pipe(stream2).pipe(stream1)
+  const [stream1, stream2] = createDuplex()
 
   const methods = {
     a: async ({b}) => {
@@ -63,9 +77,7 @@ test('call with named params', async (t) => {
 })
 
 test('call more than once', async (t) => {
-  const stream1 = new Duplex({ read: () => { }, write: () => { } })
-  const stream2 = new Duplex({ read: () => { }, write: () => { } })
-  stream1.pipe(stream2).pipe(stream1)
+  const [stream1, stream2] = createDuplex()
 
   const methods = {
     a: async ({b}) => {
@@ -85,9 +97,7 @@ test('call more than once', async (t) => {
 })
 
 test('call from both ends', async (t) => {
-  const stream1 = new Duplex({ read: () => { }, write: () => { } })
-  const stream2 = new Duplex({ read: () => { }, write: () => { } })
-  stream1.pipe(stream2).pipe(stream1)
+  const [stream1, stream2] = createDuplex()
 
   const methods = {
     a: async ({b}) => {
@@ -107,9 +117,7 @@ test('call from both ends', async (t) => {
 })
 
 test('call from both ends more than once', async (t) => {
-  const stream1 = new Duplex({ read: () => { }, write: () => { } })
-  const stream2 = new Duplex({ read: () => { }, write: () => { } })
-  stream1.pipe(stream2).pipe(stream1)
+  const [stream1, stream2] = createDuplex()
 
   const methods = {
     a: async ({ b }) => {
