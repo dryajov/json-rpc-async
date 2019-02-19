@@ -6,8 +6,8 @@
   "scripts": {
     "test": "tape test/index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "dryajov@gmail.com",
+  "license": "MIT",
   "dependencies": {
     "debug": "^4.1.1",
     "hat": "0.0.3",
