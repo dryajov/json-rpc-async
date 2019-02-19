@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "debug": "^4.1.1",
-    "hat": "0.0.3"
+    "hat": "0.0.3",
+    "is-stream": "^1.1.0"
   },
   "devDependencies": {
     "duplexify": "^4.0.0",

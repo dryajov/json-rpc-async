@@ -1,6 +1,8 @@
 'use strict'
 
 const hat = require('hat')
+const assert = require('assert')
+const isStream = require('is-stream')
 
 const {request, response, parse} = require('./utils')
 
@@ -10,11 +12,11 @@ function getAllFuncs (obj) {
   let props = []
 
   do {
-    props = props.concat(Object.getOwnPropertyNames(obj))
-      .sort()
+    props = props.concat(Object.getOwnPropertyNames(obj).sort()
       .filter(function (e, i, arr) {
-        return (e !== arr[i + 1] && typeof obj[e] === 'function' && e !== 'constructor')
-      })
+        return (typeof obj[e] === 'function' && e !== 'constructor')
+      }))
+
   } while ((obj = Object.getPrototypeOf(obj)) && obj !== Object.prototype) // eslint-disable-line
 
   return props.sort().filter(function (e, i, arr) {
@@ -26,6 +28,10 @@ const createRpc = ({stream, methods, timeout}) => {
   const outstanding = {}
   const rpcMethods = {}
   timeout = timeout || DEFAULT_TIMEOUT
+
+  assert(isStream.duplex(stream), '`stream` should be a duplex stream')
+  assert((typeof methods === 'function' || typeof methods === 'object'),
+    '`methods` should be a class instance or an object literal')
 
   getAllFuncs(methods).forEach((name) => {
     rpcMethods[name] = (...args) => {
