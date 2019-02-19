@@ -31,7 +31,8 @@ test('is valid stream', (t) => {
 
 test('is valid methods list', (t) => {
   const [stream] = createDuplex()
-  t.throws(() => createRpc({ stream, methods: '' }), /`methods` should be a class instance or an object literal/)
+  t.throws(() => createRpc({ stream, methods: '' }),
+    /`methods` should be a class instance or an object literal/)
 })
 
 test('call without params', async (t) => {

@@ -2,7 +2,7 @@
   "name": "json-rpc-async",
   "version": "1.2.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "tape test/index.js"
   },
