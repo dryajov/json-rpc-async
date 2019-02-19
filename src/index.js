@@ -34,6 +34,7 @@ const createRpc = ({stream, methods, timeout}) => {
     '`methods` should be a class instance or an object literal')
 
   getAllFuncs(methods).forEach((name) => {
+    if (name.startsWith('_')) return
     rpcMethods[name] = (...args) => {
       const id = hat()
       return new Promise((resolve, reject) => {

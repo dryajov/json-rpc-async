@@ -284,3 +284,16 @@ test('pass argument data', async (t) => {
   const res = await clientRpc.sendData('Bob')
   t.equal(res, 'Sam')
 })
+
+test('ignore private (_) methods', async (t) => {
+  const [stream] = createDuplex()
+
+  const methods = {
+    _private: () => {
+      throw new Error('should not be called!')
+    }
+  }
+
+  const clientRpc = createRpc({ stream: stream, methods: methods })
+  t.ok(typeof clientRpc._private === 'undefined')
+})
