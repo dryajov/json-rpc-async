@@ -5,7 +5,7 @@ const createRpc = require('../src')
 
 const Duplex = require('stream').Duplex
 
-test('send without params', async (t) => {
+test('call without params', async (t) => {
   const stream1 = new Duplex({ read: () => { }, write: () => { } })
   const stream2 = new Duplex({ read: () => { }, write: () => { } })
   stream1.pipe(stream2).pipe(stream1)
@@ -21,11 +21,10 @@ test('send without params', async (t) => {
   createRpc({ stream: stream2, methods })
 
   const res = await clientRpc.a()
-  console.dir(res)
   t.equal(res, 'Hello World!')
 })
 
-test('send with positional params', async (t) => {
+test('call with positional params', async (t) => {
   const stream1 = new Duplex({ read: () => { }, write: () => { } })
   const stream2 = new Duplex({ read: () => { }, write: () => { } })
   stream1.pipe(stream2).pipe(stream1)
@@ -41,11 +40,10 @@ test('send with positional params', async (t) => {
   createRpc({ stream: stream2, methods })
 
   const res = await clientRpc.a('Bob')
-  console.dir(res)
   t.equal(res, 'Hello World Bob!')
 })
 
-test('send with named params', async (t) => {
+test('call with named params', async (t) => {
   const stream1 = new Duplex({ read: () => { }, write: () => { } })
   const stream2 = new Duplex({ read: () => { }, write: () => { } })
   stream1.pipe(stream2).pipe(stream1)
@@ -61,6 +59,49 @@ test('send with named params', async (t) => {
   createRpc({ stream: stream2, methods })
 
   const res = await clientRpc.a({b: 'Bob'})
-  console.dir(res)
   t.equal(res, 'Hello World Bob!')
+})
+
+test('call more than once', async (t) => {
+  const stream1 = new Duplex({ read: () => { }, write: () => { } })
+  const stream2 = new Duplex({ read: () => { }, write: () => { } })
+  stream1.pipe(stream2).pipe(stream1)
+
+  const methods = {
+    a: async ({b}) => {
+      return `Hello World ${b}!`
+    }
+  }
+
+  const clientRpc = createRpc({ stream: stream1, methods })
+  // server rpc
+  createRpc({ stream: stream2, methods })
+
+  let res = await clientRpc.a({b: 'Bob'})
+  t.equal(res, 'Hello World Bob!')
+
+  res = await clientRpc.a({b: 'Sam'})
+  t.equal(res, 'Hello World Sam!')
+})
+
+test('call from both ends', async (t) => {
+  const stream1 = new Duplex({ read: () => { }, write: () => { } })
+  const stream2 = new Duplex({ read: () => { }, write: () => { } })
+  stream1.pipe(stream2).pipe(stream1)
+
+  const methods = {
+    a: async ({b}) => {
+      return `Hello World ${b}!`
+    }
+  }
+
+  const clientRpc = createRpc({ stream: stream1, methods })
+  // server rpc
+  const serverRpc = createRpc({ stream: stream2, methods })
+
+  let res = await clientRpc.a({b: 'Bob'})
+  t.equal(res, 'Hello World Bob!')
+
+  res = await serverRpc.a({b: 'Sam'})
+  t.equal(res, 'Hello World Sam!')
 })
