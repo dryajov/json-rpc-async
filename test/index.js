@@ -94,7 +94,7 @@ test('call with named params', async (t) => {
   const [stream1, stream2] = createDuplex()
 
   const methods = {
-    a: async ({b}) => {
+    a: async ({ b }) => {
       return `Hello World ${b}!`
     }
   }
@@ -103,7 +103,7 @@ test('call with named params', async (t) => {
   // server rpc
   createRpc({ stream: stream2, methods })
 
-  const res = await clientRpc.a({b: 'Bob'})
+  const res = await clientRpc.a({ b: 'Bob' })
   t.equal(res, 'Hello World Bob!')
 })
 
@@ -111,7 +111,7 @@ test('call more than once', async (t) => {
   const [stream1, stream2] = createDuplex()
 
   const methods = {
-    a: async ({b}) => {
+    a: async ({ b }) => {
       return `Hello World ${b}!`
     }
   }
@@ -120,10 +120,10 @@ test('call more than once', async (t) => {
   // server rpc
   createRpc({ stream: stream2, methods })
 
-  let res = await clientRpc.a({b: 'Bob'})
+  let res = await clientRpc.a({ b: 'Bob' })
   t.equal(res, 'Hello World Bob!')
 
-  res = await clientRpc.a({b: 'Sam'})
+  res = await clientRpc.a({ b: 'Sam' })
   t.equal(res, 'Hello World Sam!')
 })
 
@@ -131,7 +131,7 @@ test('call from both ends', async (t) => {
   const [stream1, stream2] = createDuplex()
 
   const methods = {
-    a: async ({b}) => {
+    a: async ({ b }) => {
       return `Hello World ${b}!`
     }
   }
@@ -140,10 +140,10 @@ test('call from both ends', async (t) => {
   // server rpc
   const serverRpc = createRpc({ stream: stream2, methods })
 
-  let res = await clientRpc.a({b: 'Bob'})
+  let res = await clientRpc.a({ b: 'Bob' })
   t.equal(res, 'Hello World Bob!')
 
-  res = await serverRpc.a({b: 'Sam'})
+  res = await serverRpc.a({ b: 'Sam' })
   t.equal(res, 'Hello World Sam!')
 })
 

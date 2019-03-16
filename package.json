@@ -3,7 +3,11 @@
   "version": "1.3.0",
   "description": "simple transport agnostic json rpc module",
   "main": "src/index.js",
-  "keywords": ["rpc", "json-rpc", "remote-procedure-calls"],
+  "keywords": [
+    "rpc",
+    "json-rpc",
+    "remote-procedure-calls"
+  ],
   "scripts": {
     "test": "tape test/index.js"
   },

@@ -2,35 +2,37 @@
 
 const hat = require('hat')
 const assert = require('assert')
-const isStream = require('is-stream')
 
-const {request, response, parse} = require('./utils')
+const { request, response, parse } = require('./utils')
 
 const DEFAULT_TIMEOUT = 1000 * 60 // 1 minute
 
 function getAllFuncs (obj) {
   let props = []
 
+  const filterFn = (e) => {
+    return (typeof obj[e] === 'function' && e !== 'constructor')
+  }
+
   do {
     props = props.concat(Object.getOwnPropertyNames(obj).sort()
-      .filter(function (e, i, arr) {
-        return (typeof obj[e] === 'function' && e !== 'constructor')
-      }))
-
+      .filter(filterFn))
   } while ((obj = Object.getPrototypeOf(obj)) && obj !== Object.prototype) // eslint-disable-line
 
-  return props.sort().filter(function (e, i, arr) {
+  return props.sort().filter((e, i, arr) => {
     return e !== arr[i + 1]
   })
 }
 
-const createRpc = ({stream, methods, timeout}) => {
+const createRpc = ({ stream, methods, timeout }) => {
   const outstanding = {}
   const rpcMethods = {}
   timeout = timeout || DEFAULT_TIMEOUT
 
-  assert(isStream.duplex(stream), '`stream` should be a duplex stream')
-  assert((typeof methods === 'function' || typeof methods === 'object'),
+  assert(typeof stream.read !== 'undefined' && typeof stream.write !== 'undefined' && typeof stream.pipe !== 'undefined',
+    '`stream` should be a duplex stream')
+
+  assert(typeof methods === 'function' || typeof methods === 'object',
     '`methods` should be a class instance or an object literal')
 
   getAllFuncs(methods).forEach((name) => {
@@ -71,6 +73,7 @@ const createRpc = ({stream, methods, timeout}) => {
     } else {
       payload = Array.isArray(payload) ? payload : [payload]
       payload.forEach((r) => {
+        if (!r.id) return
         try {
           const { resolve, reject, timeout } = outstanding[r.id]
           clearTimeout(timeout)
