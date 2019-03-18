@@ -42,3 +42,7 @@ createRpc({ stream, methods }) // listen for request
 ```
 
 Enjoy!
+
+## Licence
+
+MIT
