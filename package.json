@@ -1,6 +1,6 @@
 {
   "name": "json-rpc-async",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "simple transport agnostic json rpc module",
   "main": "src/index.js",
   "keywords": [
