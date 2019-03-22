@@ -11,6 +11,10 @@
   "scripts": {
     "test": "tape test/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dryajov/json-rpc-async"
+  },
   "author": "dryajov@gmail.com",
   "license": "MIT",
   "dependencies": {
